@@ -3,10 +3,9 @@ Sub AddPicture(ByVal strPic As String, ByVal intLocX As Integer, ByVal intLocY A
     'Usage (Put this in your subroutine):  call AddPicture(strPic, intLocX, intLocY, intWidth, intHeight, intStdDir)
     '                                       ex1:  AddPicture("myPic.jpg", 50, 100, 700)
     '                                       ex2:  AddPicture("myPic.jpg", 50, 100, 700, 300)
-    '                                       ex3:  AddPicture("myPic.jpg", 50, 100, 700, ,1)
-    '                                       ex4:  AddPicture("C:\myFolder\myPic.jpg", 50, 100, 700, 300, 1)
-    'strPic should be only the name of the picture, it should be located in the default test directory unless intStdDir is set to False.
-    '
+    '                                       ex3:  AddPicture("C:\myFolder\myPic.jpg", 50, 100, 700, 300)
+    'strPic should include the path to the picture
+
     '*** Use ex1 unless you need to specify a different path or you want to set your own aspect ratio. ***
     
     Dim shpPicture As Shape
