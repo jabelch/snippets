@@ -1,10 +1,11 @@
 Sub AddPicture(ByVal strPic As String, ByVal intLocX As Integer, ByVal intLocY As Integer, _
                ByVal intWidth As Integer, Optional ByVal intHeight As Integer)
-    'Usage (Put this in your subroutine):  call AddPicture(strPic, intLocX, intLocY, intWidth, intHeight, intStdDir)
-    '                                       ex1:  AddPicture("myPic.jpg", 50, 100, 700)
-    '                                       ex2:  AddPicture("myPic.jpg", 50, 100, 700, 300)
-    '                                       ex3:  AddPicture("C:\myFolder\myPic.jpg", 50, 100, 700, 300)
-    'strPic should include the path to the picture
+    'Usage:    call AddPicture(strPic, intLocX, intLocY, intWidth, intHeight)
+    '                         ex1:  AddPicture("myPic.jpg", 50, 100, 700)
+    '                         ex2:  AddPicture("myPic.jpg", 50, 100, 700, 300)
+    '                         ex3:  AddPicture("C:\myFolder\myPic.jpg", 50, 100, 700, 300)
+    'strPic should include the path to the picture.  This can be modified if you have
+    'global variables with the path.
 
     '*** Use ex1 unless you need to specify a different path or you want to set your own aspect ratio. ***
     
