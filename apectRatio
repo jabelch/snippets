@@ -1,0 +1,54 @@
+Sub AddPicture(ByVal strPic As String, ByVal intLocX As Integer, ByVal intLocY As Integer, _
+               ByVal intWidth As Integer, Optional ByVal intHeight As Integer, Optional ByVal intStdDir As Integer = 0)
+    'Usage (Put this in your subroutine):  call AddPicture(strPic, intLocX, intLocY, intWidth, intHeight, intStdDir)
+    '                                       ex1:  AddPicture("myPic.jpg", 50, 100, 700)
+    '                                       ex2:  AddPicture("myPic.jpg", 50, 100, 700, 300)
+    '                                       ex3:  AddPicture("myPic.jpg", 50, 100, 700, ,1)
+    '                                       ex4:  AddPicture("C:\myFolder\myPic.jpg", 50, 100, 700, 300, 1)
+    'strPic should be only the name of the picture, it should be located in the default test directory unless intStdDir is set to False.
+    '
+    '*** Use ex1 unless you need to specify a different path or you want to set your own aspect ratio. ***
+    
+    Dim shpPicture As Shape
+    Dim dblAspectRatio As Double
+    Dim strPath As String
+    
+    If intStdDir = 0 Then
+        strPath = strTestDrive & strTestDir & strProductDir & strPic    'This set the path to the standard B:\ats\ directory
+    Else
+        strPath = strPic                                                'This allow you to specify the path of the picture
+    End If
+     
+    'Check if file exists to prevent crash 'JAB 12/19/2012
+    If Not FileOrDirExists(strPath) Then
+        Call ActiveSheet.Shapes.AddTextEffect(msoTextEffect2, "Image Not Found!" & vbCr, "Arial Black", 36#, False, False, intLocX, intLocY)
+        Call ActiveSheet.Shapes.AddTextEffect(msoTextEffect14, strPath, "Garamond", 16#, False, False, intLocX, intLocY + 30).Select
+        Exit Sub
+    End If
+    
+    'Exit Sub
+    Set shpPicture = ActiveSheet.Shapes.AddPicture(strPath, False, True, intLocX, intLocY, 1, 1)
+
+    shpPicture.ScaleHeight 1, msoTrue
+    shpPicture.ScaleWidth 1, msoTrue
+    dblAspectRatio = shpPicture.Width / shpPicture.Height
+
+    If intHeight > 0 Then                               'This lets you set both the width and height of the picture if a height number is used
+        shpPicture.Width = intWidth
+        shpPicture.Height = intHeight
+    Else
+        shpPicture.Width = intWidth                     'You set the width & this sets the height of the picture for you based on the aspect ratio.
+        shpPicture.Height = intWidth / dblAspectRatio
+    End If
+    
+'   Here's another way to do it...
+'
+'    If blnKeepRatio = True Then
+'        shpPicture.Width = intWidth                     'You set the width & this sets the height of the picture for you based on the aspect ratio.
+'        shpPicture.Height = intWidth / dblAspectRatio
+'    Else
+'        shpPicture.Width = intHeight * dblAspectRatio   'You set the height & this sets the width of the picture for you based on the aspect ratio.
+'        shpPicture.Height = intHeight
+'    End If
+
+End Sub
