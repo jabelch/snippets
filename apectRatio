@@ -1,5 +1,5 @@
 Sub AddPicture(ByVal strPic As String, ByVal intLocX As Integer, ByVal intLocY As Integer, _
-               ByVal intWidth As Integer, Optional ByVal intHeight As Integer, Optional ByVal intStdDir As Integer = 0)
+               ByVal intWidth As Integer, Optional ByVal intHeight As Integer)
     'Usage (Put this in your subroutine):  call AddPicture(strPic, intLocX, intLocY, intWidth, intHeight, intStdDir)
     '                                       ex1:  AddPicture("myPic.jpg", 50, 100, 700)
     '                                       ex2:  AddPicture("myPic.jpg", 50, 100, 700, 300)
@@ -13,13 +13,9 @@ Sub AddPicture(ByVal strPic As String, ByVal intLocX As Integer, ByVal intLocY A
     Dim dblAspectRatio As Double
     Dim strPath As String
     
-    If intStdDir = 0 Then
-        strPath = strTestDrive & strTestDir & strProductDir & strPic    'This set the path to the standard B:\ats\ directory
-    Else
-        strPath = strPic                                                'This allow you to specify the path of the picture
-    End If
-     
-    'Check if file exists to prevent crash 'JAB 12/19/2012
+    strPath = strPic          'If you want to update the path
+
+    'Check if file exists and display a visual
     If Not FileOrDirExists(strPath) Then
         Call ActiveSheet.Shapes.AddTextEffect(msoTextEffect2, "Image Not Found!" & vbCr, "Arial Black", 36#, False, False, intLocX, intLocY)
         Call ActiveSheet.Shapes.AddTextEffect(msoTextEffect14, strPath, "Garamond", 16#, False, False, intLocX, intLocY + 30).Select
