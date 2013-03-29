@@ -13,7 +13,7 @@ Sub AddPicture(ByVal strPic As String, ByVal intLocX As Integer, ByVal intLocY A
     Dim dblAspectRatio As Double
     Dim strPath As String
     
-    strPath = strPic          'If you want to update the path
+    strPath = strPic         'If you want to update the path
 
     'Check if file exists and display a visual
     If Not FileOrDirExists(strPath) Then
