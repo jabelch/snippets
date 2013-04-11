@@ -1,0 +1,96 @@
+Function FileOrDirExists(ByVal path As String) As Boolean
+    On Error GoTo EarlyExit
+    If Not Dir(path, vbDirectory) = vbNullString Then FileOrDirExists = True
+      
+EarlyExit:
+    On Error GoTo 0
+    
+End Function
+
+Sub AddAnimation(ByVal strPath As String, ByVal strGif As String, ByVal intLocX As Integer, ByVal intLocY As Integer, _
+                    ByVal intWidth As Integer, Optional ByVal intHeight As Integer)
+
+    strPath = strPath & strGif
+
+    'Check if file exists
+    If Not FileOrDirExists(strPath) Then
+        Call ActiveSheet.Shapes.AddTextEffect(msoTextEffect2, "Image Not Found!" & vbCr, "Arial Black", 36#, False, False, intLocX, intLocY)
+        Call ActiveSheet.Shapes.AddTextEffect(msoTextEffect14, strPath, "Garamond", 16#, False, False, intLocX, intLocY + 40).Select
+        Exit Sub
+    End If
+        
+    'Create a shape object to get aspect ratio of Image
+    'We could get the image size from the header,
+    'but then we have to check for different file types
+    Dim shpPicture As Shape
+    Set shpPicture = ActiveSheet.Shapes.AddPicture(strPath, False, True, intLocX, intLocY, 1, 1)
+    shpPicture.ScaleHeight 1, msoTrue
+    shpPicture.ScaleWidth 1, msoTrue
+    intHeight = intWidth * shpPicture.Height / shpPicture.Width
+    shpPicture.Delete   'We don't want to keep this on our form
+    
+    'Construct .html file
+    Dim strHTML, body_style, img_style, img_src, img_size As String
+    Dim tmpWidth As Integer
+    tmpWidth = 5 'dblAspectRatio * intWidth + intWidth
+    
+    body_style = "style=""margin: 0px;"""
+    img_style = "style=""max-width:100%; max-height:100%;"""
+    img_src = " src=""" & strPath & """"
+    img_size = " width=100%"
+    overall_style = "<style type=""text/css"">" & _
+                    "P.centeredImage" & _
+                        "{text-align:center; margin-top:0px; margin-bottom:0px; padding:0px;}" & _
+                    "</style>"
+    strHTML = "<!DOCTYPE html><html><head>" & overall_style & "</head>" & _
+                "<body " & body_style & "><p class=""centeredImage"">" & _
+                "<img " & img_style & img_src & img_size & ">" & _
+                "</p></body></html>"
+
+    'Save strHTML to file
+    Dim fileName As String
+    Dim fileHandle As String
+
+    fileName = strPath & ".html"
+    fileHandle = FreeFile()
+
+    Open fileName For Output As #fileHandle
+    Print #fileHandle, strHTML
+    Close #fileHandle
+    
+    
+    'Add Browser Object To Excel Worksheet
+    Dim browser As OLEObject
+    Set browser = ActiveSheet.OLEObjects.add(ClassType:="Shell.Explorer.2", link:=False, _
+        DisplayAsIcon:=False, Left:=intLocX, Top:=intLocY, Width:=intWidth, Height:=intHeight)
+
+    With browser.Object
+        .Silent = True
+        .MenuBar = False
+        .AddressBar = False
+        .navigate fileName
+    End With
+    
+    'Workaround to get the thing to display
+    Dim strCurrentSheet, strDummySheet As String
+    strCurrentSheet = ActiveSheet.Name
+    strDummySheet = "Dummy Sheet"
+    
+    'Disable Alerts
+    Application.DisplayAlerts = False
+    On Error Resume Next
+        
+    'Create a worksheet and switch to it
+    Worksheets.add.Name = strDummySheet
+    Worksheets(strDummySheet).Visible = True
+    Worksheets(strDummySheet).Select
+    
+    'Switch back then delete
+    Worksheets(strCurrentSheet).Select
+    Worksheets(strDummySheet).Delete
+    Err.Clear
+    
+    'Enable Alerts
+    Application.DisplayAlerts = True
+    
+End Sub
