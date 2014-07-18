@@ -1,0 +1,24 @@
+#powershell script to set registry key/value
+
+function setSubKey ($p, $k, $n, $v, $t)
+{
+  if (Test-Path $p) {
+    if (!(Test-Path "$p$k")) { md $p$k" } #create a new key if it doesn't exist
+    if (!(Get-Item -Path "$p$k").Property -eq $n {
+      New-ItemProperty -Path "$p$k" -Name $n -Value $v -PropertyType $t #If Subkey doesn't exist, create it
+    }
+    Set-ItemProperty -Path "$p$k" -Name $n -Value $v #Set the subkey value
+  } else {
+    Write-Error "Path Not Found: $p"
+  }
+}
+
+#See http://support.microsoft.com/kb/251404
+#http://lists.samba.org/archive/jcifs/2006-September/006554.html
+$path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\"
+$key = "Internet Settings"
+$name = "DisableNTLMPreAuth"
+$value = 1
+$type = "REG_DWORD"
+
+setSubKey $path $key $name $value $type
